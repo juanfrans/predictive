@@ -1,0 +1,5 @@
+* [nyctaxi.info](http://nyctaxi.info/)
+* [nyctaxi.info blog post](http://mathbabe.org/2014/10/27/guest-post-nyc-taxi-wait-times/)
+* [Predicting taxi pickups in New York City](http://www.vivekchoksi.com/papers/taxi_pickups.pdf)
+* [Urban traffic modelling and prediction using large scale taxi GPS traces](http://www.cs.mcgill.ca/~pcastr/trafficPredSmall.pdf)
+* [Finding demand for taxis](https://centres.smu.edu.sg/larc/files/2013/08/riju.pdf)

@@ -160,7 +160,7 @@ SET the_geom = ST_GeomFromText('POINT(' || pickup_longitude || ' ' || pickup_lat
   `alter table yellow_origins_1301`
   `drop constraint "enforce_srid_the_geom";`
   * Now, to actually alter the table (reproject it) we need first to delete some problematic records (ie. those with longitudes exceeding limits).
-  * Test for those records by: `select count(t.pickup_latitude) from yellow_origins_1301 as t where t.pickup_latitude > 90;` or print the actual latitude by: 'select pickup_latitude from yellow_origins_1301 where pickup_latitude > 90'
+  * Test for those records by: `select count(t.pickup_latitude) from yellow_origins_1301 as t where t.pickup_latitude > 90;` or print the actual latitude by: `select pickup_latitude from yellow_origins_1301 where pickup_latitude > 90`
   * Finally, you can delete these records by: `delete from only yellow_origins_1301 where pickup_latitude > 90 returning *;`
   * You need to check also for negative latitude and positive or negative longitude problems.
   * And the actual re-projection is here:
@@ -176,6 +176,12 @@ SET the_geom = ST_GeomFromText('POINT(' || pickup_longitude || ' ' || pickup_lat
 ### Querying database and exporting results
   * Select the records that end in our zone and look at those taxis and where they picked up their following passenger
   * Select the records that start in our zone and look at where they came from and where they are going to
+    * Create a table with the trips that ended in our zone:
+    ```sql
+    create table temp_results as
+    select medallion, hack_license, dropoff_datetime, dropoff_latitude, dropoff_longitude from yellow_dest_1301 as t, streets_selected_buffer_300ft as n where st_intersects(t.the_geom,n.geom);
+    ```
+    * Export results to new csv file: `copy temp_results to '/path/to/file/01_SelectedTrips_1301.csv' delimiter ',' csv header;`
 
 ### Final filtering of results
 

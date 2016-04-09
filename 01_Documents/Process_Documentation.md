@@ -223,7 +223,6 @@ I'm looking at the following blogs and sites for documentation:
 * [Boundless](http://boundlessgeo.com/2013/12/postgis-amazon-rds/)
 * [Pheelicks](http://www.pheelicks.com/2014/01/creating-a-geospatial-database-on-amazon-rds/)
 
-### Setting up AWS RDS
 ### Launching the RDS instance
 * Log into AWS.
 * Go to the RDS tab.
@@ -255,7 +254,33 @@ I'm looking at the following blogs and sites for documentation:
 * To connect do the following in command line:
   * `psql --host predictivedb.cqstqsnchb9m.us-east-1.rds.amazonaws.com --port 5432 --username your_username --dbname taxiPredictive`
   * Type the password when requested.
-* Done!
+
+### Create the postGIS extension
+* Following [this part](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.PostGIS) of the AWS documentation.
+* Log into the database with your 'master' user, the one that was created when you first setup your database.
+* You can test it with the following command: `SELECT current_user;`.
+* Create the extension: `create extension postgis;`
+* Create the fuzzystrmatch extension: `create extension fuzzystrmatch;`
+* Create the tiger_geocoder extension: `create extension postgis_tiger_geocoder;` (this is a geocoder extension that works with the Tiger dataset)
+* Create the topology extension: `create extension postgis_topology;`
+* To see the ownership of the extensions do: `\dn`
+* Transfer ownership of the extensions to the superuser:
+  * `alter schema topology owner to rds_superuser;`
+  * `alter schema tiger owner to rds_superuser;`
+  * `alter schema tiger_data owner to rds_superuser;`
+* Transfer ownership of the objects to the rds_superuser role:
+```sql
+CREATE FUNCTION exec(text) returns text language plpgsql volatile AS $f$ BEGIN EXECUTE $1; RETURN $1; END; $f$;
+SELECT exec('ALTER TABLE ' || quote_ident(s.nspname) || '.' || quote_ident(s.relname) || ' OWNER TO rds_superuser;')
+  FROM (
+    SELECT nspname, relname
+    FROM pg_class c JOIN pg_namespace n ON (c.relnamespace = n.oid) 
+    WHERE nspname in ('tiger','topology') AND
+    relkind IN ('r','S','v') ORDER BY relkind = 'S')
+s;
+```
+
+
 
 ### To do:
 * Setup another user for Danil

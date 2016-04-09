@@ -216,3 +216,71 @@ This 'chapter' describes the process of setting up an API - using Amazon Web Ser
   * Setup all users and permissions following this [document](https://github.com/juanfrans/notes/wiki/Setting-Up-and-Login-In-to-an-EC2-Instance-(AWS)).
   * Customize instance following [this](https://github.com/juanfrans/notes/wiki/Customizing-EC2-Instance-(AWS)).
 
+## Creating postGIS online for querying
+I'm looking at the following blogs and sites for documentation:
+* [AWS](https://aws.amazon.com/rds/postgresql/)
+* [AWS postGIS setup](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.PostGIS)
+* [Boundless](http://boundlessgeo.com/2013/12/postgis-amazon-rds/)
+* [Pheelicks](http://www.pheelicks.com/2014/01/creating-a-geospatial-database-on-amazon-rds/)
+
+### Setting up AWS RDS
+### Launching the RDS instance
+* Log into AWS.
+* Go to the RDS tab.
+* Click `Get Started`.
+* Choose PostgreSQL.
+* Choose Dev/Test to use the Free Usage Tier.
+* In the DB Details choose the following:
+  * DB Engine: postgres
+  * License Model: postgresql-license
+  * DB Engine Version: 9.4.7 (I don't know why this one is better or if it is. There's a newer one but this was the default).
+  * DB Instance Class: db.t2.micro (Don't know which one to choose here, I'm choosing the one with the largest RAM).
+  * Storage Type: General Purpose
+  * DB Instance Identifier: predictivedb
+* In the Advanced Settings:
+  * Download the new certificate bundle (?)
+  * Make sure it's publicly accessible
+  * VCP Security Group(s): Create new security group
+  * Database Name: taxiPredictive
+  * Database Port: 5432
+* Click on `Launch DB Instance`
+
+### Setting up the security group
+* Go to the EC2 Console (Network & Security) to configure the security group you just created.
+* Edit the inbound rules and change the source to `Anywhere`.
+* Save the rule.
+
+### Connecting to the DB
+* Get the location of your DB by going to Services/RDS/Instances and expanding your instance.
+* To connect do the following in command line:
+  * `psql --host predictivedb.cqstqsnchb9m.us-east-1.rds.amazonaws.com --port 5432 --username your_username --dbname taxiPredictive`
+  * Type the password when requested.
+* Done!
+
+### To do:
+* Setup another user for Danil
+* Load taxi data for one day
+* Try out queries
+* Is there a way to pre-build queries so that you only have to pass a pair of coordinates and a request and get the data?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

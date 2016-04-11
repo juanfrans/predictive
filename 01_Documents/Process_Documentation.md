@@ -296,8 +296,6 @@ To create other users login to the database as a superuser and do: `create role 
 * And maybe [this](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Using_the_Query_API.html) is the solution to querying the database through an HTTP request?
 
 ### To do:
-* Setup another user for Danil
-* Load taxi data for one day
 * Try out queries
 * Is there a way to pre-build queries so that you only have to pass a pair of coordinates and a request and get the data?
 

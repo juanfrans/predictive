@@ -279,8 +279,21 @@ SELECT exec('ALTER TABLE ' || quote_ident(s.nspname) || '.' || quote_ident(s.rel
     relkind IN ('r','S','v') ORDER BY relkind = 'S')
 s;
 ```
+* Test the extensions:
+  * Tiger:
+    * `SET search_path=public,tiger;`
+    * `select na.address, na.streetname, na.streettypeabbrev, na.zip`
+    * `from normalize_address('1 Devonshire Place, Boston, MA 02109') as na;`
+  * Topology:
+    * `select topology.createtopology('my_new_topo',26986,0.5);`
 
+### Create other users
+To create other users login to the database as a superuser and do: `create role roleName with password 'password' login;`
 
+### Querying the postGIS RDB in AWS
+* The basic sql query will look like this: `select dropoff_longitude, dropoff_latitude from yelloworg130116 where ST_Distance_Sphere(the_geom, ST_MakePoint(longitude, latitude)) < distance;` (the distance will be in meters).
+* Can [this](https://stackoverflow.com/questions/5297396/quick-random-row-selection-in-postgres) be the solution to select a random result?
+* And maybe [this](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Using_the_Query_API.html) is the solution to querying the database through an HTTP request?
 
 ### To do:
 * Setup another user for Danil
